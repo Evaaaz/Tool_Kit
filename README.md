@@ -1,6 +1,6 @@
 # Datathon 2026 - GenAI & Financial Markets
 
-Toolkit for the Women's Datathon 2026. Covers data loading, statistical analysis (DiD, event study, GARCH, VAR), and visualization.
+Repo for the Women's Datathon 2026. Data loading, analysis (DiD, event study, GARCH, VAR), and visualization.
 
 ## Setup
 
@@ -14,23 +14,23 @@ pip install pandas numpy statsmodels linearmodels plotly ruptures tfcausalimpact
 
 ## Repository structure
 
-- `01_data_preprocessing.py` - Load/clean/validate all datasets
+- `01_data_preprocessing.py` - Load, clean, validate datasets
 - `02_statistical_analysis.py` - DiD, panel regression, event study, GARCH, VAR
-- `03_visualization.py` - Time series plots, event study charts, regression diagnostics
+- `03_visualization.py` - Plots for time series, event study, diagnostics
 - `utils.py` - LaTeX table export
-- `test_new_features.py` - Verify everything works
-- `test_outputs/` - Output artifacts from `test_new_features.py`
+- `test_new_features.py` - Feature tests
+- `test_outputs/` - Outputs from `test_new_features.py`
 - `project1/data/raw/` - Raw inputs for project 1
 - `project1/data/processed/` - Cleaned/derived datasets for project 1
-- `project1/src/01_prepare_state_panel.py` - Build state-level panel for project 1
-- `project1/src/02_panel_regression.py` - Panel regression models for project 1
-- `project1/src/03_synth_control.py` - Synthetic control workflow for project 1
-- `project1/src/04_causal_impact.py` - Causal impact analysis for project 1
-- `project1/src/05_event_study.py` - Event study analysis for project 1
-- `project1/outputs/tables/` - Tables for project 1 results
-- `project1/outputs/figures/` - Figures for project 1 results
+- `project1/src/01_prepare_state_panel.py` - Build state panel
+- `project1/src/02_panel_regression.py` - Panel regression models
+- `project1/src/03_synth_control.py` - Synthetic control
+- `project1/src/04_causal_impact.py` - Causal impact
+- `project1/src/05_event_study.py` - Event study
+- `project1/outputs/tables/` - Tables
+- `project1/outputs/figures/` - Figures
 
-## Quick usage
+## Example
 
 ```python
 import importlib.util
@@ -69,18 +69,8 @@ git commit -m "Your message"
 git push origin main
 ```
 
-## Current research question
+## Research notes
 
-* Are AI-exposed firms (this could mean AI research companies, or AI infra, we can use the AI ) less affected (how to quanitfy this) by US macroeconomic slowdowns (maybe analyze by different sectors that use AI)
-
-  * hypothesis: in economic downturns, general companies may turn more to AI automation or reliance on AI due to efficiency or cost concerns, making AI companies
-  * hypothesis: in economic downturns, public sentiments may about AI may become more negative or and investor anxieties about AI investments may increase → less capital investments. economic downturn could mean interest rates increase
-  * track changes throughout the recent years as AI has become more widely accepted as inevitability?
-* How are different US states treated under GenAI reform? (some get a positive effect through new startups etc., but are these the same states that also have a lot of workers lose their jobs due to AI)
-
-  * hypothesis: states where economy more dependent on manufacturing etc. should not be as affected in neither positive or negative direction, whereas e.g. California gets positive effects in the form of new startups and investments etc., but also negative in the sense that a lot of knowledge-driven roles will be affected
-* How do equity markets price GenAI adoption news by maturity stage (intent -> pilot -> production -> launch)?
-
-  * hypotheses:
-    * Late-stage announcements (production/launch) have higher CAR than early-stage
-    * Early-stage announcements are noisier with more dispersed reactions
+- AI-exposed firms vs US macro slowdowns: sector splits and adoption stage effects.
+- State-level GenAI reform impacts: startup gains vs job losses.
+- Equity market reactions by adoption stage (intent, pilot, production, launch).

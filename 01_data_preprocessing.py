@@ -10,14 +10,14 @@ warnings.filterwarnings('ignore', category=FutureWarning)
 
 
 class DataLoader:
-    """Load all datathon datasets."""
+    """Load datasets."""
 
     def __init__(self, data_dir: str = "./data"):
         self.data_dir = Path(data_dir)
         self.data = {}
 
     def load_all(self, include_large_files: bool = True) -> dict:
-        """Load all datasets. Set include_large_files=False to skip patents/SEC."""
+        """Load datasets. Set include_large_files=False to skip patents/SEC."""
         self._load_genai_dimension()
         self._load_genai_research()
         self._load_cursor_dimension()
@@ -101,11 +101,11 @@ class DataLoader:
 
 
 class DataCleaner:
-    """Cleaning utilities."""
+    """Cleaning helpers."""
 
     @staticmethod
     def clean_stock_data(df: pd.DataFrame, ticker_col: str = 'ticker') -> pd.DataFrame:
-        """Clean and sort stock prices, flag suspicious returns."""
+        """Clean and sort stock prices."""
         df = df.copy()
 
         critical_cols = ['Date', 'Close', 'Adj Close', ticker_col]
@@ -124,7 +124,7 @@ class DataCleaner:
 
     @staticmethod
     def normalize_tickers(df: pd.DataFrame, ticker_col: str = 'ticker') -> pd.DataFrame:
-        """Uppercase + strip whitespace for reliable merges."""
+        """Uppercase and strip whitespace for merges."""
         df = df.copy()
         if ticker_col not in df.columns:
             raise KeyError(f"{ticker_col} not found in dataframe")
@@ -186,7 +186,7 @@ class DataCleaner:
         price_date_col: str = 'Date',
         output_col: str = 'event_trade_date'
     ) -> pd.DataFrame:
-        """Map event dates to the next available trading day per ticker."""
+        """Map event dates to the next trading day per ticker."""
         events = events_df.copy()
         prices = prices_df.copy()
 
@@ -229,7 +229,7 @@ class DataCleaner:
         keyword_map: dict = None,
         prefix: str = 'kw_'
     ) -> pd.DataFrame:
-        """Build keyword count features from text columns."""
+        """Keyword count features from text columns."""
         df = df.copy()
 
         if keyword_map is None:
@@ -275,7 +275,7 @@ class DataCleaner:
 
     @staticmethod
     def clean_patent_data(df: pd.DataFrame, confidence_threshold: str = 'predict86') -> pd.DataFrame:
-        """Filter patents by AI classification confidence level."""
+        """Filter patents by AI confidence level."""
         df = df.copy()
         df = df[df['pub_dt'].notna()]
 
@@ -288,7 +288,7 @@ class DataCleaner:
     @staticmethod
     def handle_outliers(series: pd.Series, method: str = 'winsorize',
                        limits: Tuple[float, float] = (0.01, 0.01)) -> pd.Series:
-        """Handle outliers: winsorize, clip, or remove via IQR."""
+        """Handle outliers: winsorize, clip, or IQR."""
         if method == 'winsorize':
             from scipy.stats.mstats import winsorize
             return pd.Series(winsorize(series, limits=limits), index=series.index)
@@ -308,11 +308,11 @@ class DataCleaner:
 
 
 class DataValidator:
-    """Data quality checks."""
+    """Data checks."""
 
     @staticmethod
     def check_missing(df: pd.DataFrame, threshold: float = 0.1) -> dict:
-        """Check for missing values above threshold."""
+        """Missing values above threshold."""
         missing = df.isna().sum() / len(df)
         problematic = missing[missing > threshold]
         return {
@@ -331,7 +331,7 @@ class DataValidator:
 
     @staticmethod
     def check_date_gaps(df: pd.DataFrame, date_col: str, expected_freq: str = 'D') -> dict:
-        """Check for gaps in time series."""
+        """Check gaps in time series."""
         df = df.sort_values(date_col)
         date_range = pd.date_range(start=df[date_col].min(),
                                    end=df[date_col].max(),
@@ -349,9 +349,9 @@ class DataValidator:
 
     @staticmethod
     def generate_report(df: pd.DataFrame, name: str = "Dataset") -> str:
-        """Generate data quality report."""
-        report = f"\nDATA QUALITY REPORT: {name}\n"
-        report += f"{'='*50}\n\n"
+        """Data quality report."""
+        report = f"\nData quality report: {name}\n"
+        report += f"{'-'*50}\n\n"
 
         report += f"Shape: {df.shape}\n"
         report += f"Memory: {df.memory_usage(deep=True).sum() / 1e6:.2f} MB\n\n"

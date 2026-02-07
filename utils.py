@@ -9,7 +9,7 @@ warnings.filterwarnings('ignore')
 
 
 class LaTeXExporter:
-    """Export regression results to LaTeX tables."""
+    """LaTeX table helpers."""
 
     @staticmethod
     def regression_to_latex(results,
@@ -19,7 +19,7 @@ class LaTeXExporter:
                            include_stats: list = ['rsquared', 'nobs', 'fstat'],
                            decimal_places: int = 3,
                            se_format: str = 'parentheses') -> str:
-        """Single regression result to LaTeX table with significance stars."""
+        """Single model to LaTeX table."""
         def _as_series(values, names=None):
             if isinstance(values, pd.Series):
                 return values
@@ -240,7 +240,7 @@ class LaTeXExporter:
                                    decimal_places: int = 2,
                                    caption: str = "Summary Statistics",
                                    label: str = "tab:summary") -> str:
-        """Summary statistics table (typical Table 1 in papers)."""
+        """Summary statistics table."""
         if vars_to_include is None:
             vars_to_include = df.select_dtypes(include=[np.number]).columns.tolist()
         if var_labels is None:

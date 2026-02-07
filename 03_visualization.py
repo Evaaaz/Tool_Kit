@@ -23,7 +23,7 @@ plt.rcParams['legend.fontsize'] = 9
 
 
 class ExploratoryVisuals:
-    """EDA visualizations."""
+    """EDA plots."""
 
     @staticmethod
     def time_series_plot(df, date_col, value_cols, title="Time Series",
@@ -70,7 +70,7 @@ class ExploratoryVisuals:
     def distribution_comparison(df, value_col, group_col,
                                title="Distribution Comparison",
                                figsize=(12, 5), save_path=None):
-        """Side-by-side violin + box plots for comparing groups."""
+        """Violin + box plots by group."""
         fig, axes = plt.subplots(1, 2, figsize=figsize)
 
         sns.violinplot(data=df, x=group_col, y=value_col, ax=axes[0])
@@ -91,13 +91,13 @@ class ExploratoryVisuals:
 
 
 class AnalysisVisuals:
-    """Visualizations for statistical analyses."""
+    """Stats visuals."""
 
     @staticmethod
     def event_study_plot(abnormal_returns, car, event_date_label="Event",
                         title="Event Study: Cumulative Abnormal Returns",
                         figsize=(12, 6), save_path=None):
-        """Event study plot: daily ARs + cumulative ARs."""
+        """Event study plot: AR and CAR."""
         fig, axes = plt.subplots(2, 1, figsize=figsize, sharex=True)
 
         dates = abnormal_returns.index
@@ -130,7 +130,7 @@ class AnalysisVisuals:
     def did_visualization(df, outcome_col, treatment_col, time_col,
                          intervention_time, title="Difference-in-Differences",
                          figsize=(10, 6), save_path=None):
-        """DiD parallel trends visualization."""
+        """DiD parallel trends plot."""
         fig, ax = plt.subplots(figsize=figsize)
 
         means = df.groupby([time_col, treatment_col])[outcome_col].mean().unstack()
@@ -158,7 +158,7 @@ class AnalysisVisuals:
     def sector_comparison_plot(df, sector_col, value_col,
                               title="Sector Comparison",
                               figsize=(12, 6), save_path=None):
-        """Horizontal bar plot comparing sectors, color-coded by sign."""
+        """Horizontal bar plot by sector."""
         sector_means = df.groupby(sector_col)[value_col].mean().sort_values()
 
         fig, ax = plt.subplots(figsize=figsize)
@@ -178,7 +178,7 @@ class AnalysisVisuals:
 
     @staticmethod
     def regression_diagnostics(model_results, figsize=(12, 10), save_path=None):
-        """Four-panel regression diagnostics: residuals vs fitted, QQ, scale-location, leverage."""
+        """Regression diagnostics: residuals vs fitted, QQ, scale-location, leverage."""
         from scipy import stats
 
         residuals = model_results.resid
@@ -230,7 +230,7 @@ class AnalysisVisuals:
     def coefficient_plot(results, exclude_vars=None, alpha=0.05,
                         sort_by_magnitude=False, figsize=(10, 8),
                         colors=('steelblue', 'lightgray'), save_path=None):
-        """Coefficient plot with confidence intervals. Works with statsmodels, linearmodels, or dict."""
+        """Coefficient plot with CIs for statsmodels, linearmodels, or dict."""
         def _as_series(values, names=None):
             if isinstance(values, pd.Series):
                 return values
@@ -318,7 +318,7 @@ class AnalysisVisuals:
 
 
 class InteractiveVisuals:
-    """Interactive plots using plotly (optional)."""
+    """Interactive plots using plotly."""
 
     @staticmethod
     def interactive_time_series(df, date_col, value_cols, title="Interactive Time Series"):

@@ -18,7 +18,7 @@ warnings.filterwarnings('ignore')
 
 
 class HypothesisTests:
-    """Statistical tests with corrections and diagnostics."""
+    """Tests and diagnostics."""
 
     @staticmethod
     def difference_in_differences(df: pd.DataFrame,
@@ -26,7 +26,7 @@ class HypothesisTests:
                                  treatment_col: str,
                                  post_col: str,
                                  controls: list = None) -> dict:
-        """DiD estimation. Y = b0 + b1*Treat + b2*Post + b3*(Treat x Post) + Controls + e"""
+        """DiD: Y = b0 + b1*Treat + b2*Post + b3*(Treat x Post) + controls + e"""
         df = df.copy()
         df['treatment_post'] = df[treatment_col] * df[post_col]
 
@@ -161,13 +161,13 @@ class HypothesisTests:
 
 
 class TimeSeriesAnalysis:
-    """Time series stationarity checks and decomposition."""
+    """Time series checks and decomposition."""
 
     @staticmethod
     def check_stationarity(series: pd.Series,
                           name: str = "Series",
                           alpha: float = 0.05) -> Dict:
-        """ADF test for stationarity. Reject H0 (unit root) if p < alpha."""
+        """ADF stationarity test; reject H0 if p < alpha."""
         series = series.dropna()
         result = adfuller(series, autolag='AIC')
         is_stationary = result[1] < alpha
@@ -215,7 +215,7 @@ class TimeSeriesAnalysis:
 
 
 class EventStudy:
-    """Event study methodology for stock returns."""
+    """Event study for stock returns."""
 
     @staticmethod
     def abnormal_returns(stock_returns: pd.Series,
@@ -223,7 +223,7 @@ class EventStudy:
                         event_date: pd.Timestamp,
                         estimation_window: int = 120,
                         event_window: Tuple[int, int] = (-5, 10)) -> Dict:
-        """Market model abnormal returns: estimate normal returns in estimation window, then compute AR and CAR."""
+        """Market model abnormal returns and CAR."""
         df = pd.DataFrame({
             'stock': stock_returns,
             'market': market_returns
@@ -345,7 +345,7 @@ class EventStudy:
         event_window: Tuple[int, int] = (-5, 10),
         method: str = 'market_adjusted'
     ) -> Dict:
-        """Run event study across many events and compute CAAR."""
+        """Batch event study; compute CAAR."""
         events = events_df.copy()
         data = returns_df.copy()
 
@@ -487,7 +487,7 @@ class EventStudy:
 
 
 class AdoptionIntensityModel:
-    """Ridge model for outcome-calibrated intensity scores using ticker splits."""
+    """Ridge model for intensity scores with ticker splits."""
 
     @staticmethod
     def build_feature_matrix(df, feature_cols, categorical_cols=None, drop_first=True):
@@ -562,7 +562,7 @@ class AdoptionIntensityModel:
 
 
 class RobustRegressionUtils:
-    """Outlier detection and heteroskedasticity tests."""
+    """Outlier and heteroskedasticity tests."""
 
     @staticmethod
     def detect_outliers(df: pd.DataFrame,
@@ -607,13 +607,13 @@ class RobustRegressionUtils:
 
 
 class GARCHAnalysis:
-    """GARCH volatility models."""
+    """GARCH models."""
 
     @staticmethod
     def test_volatility_clustering(returns: pd.Series,
                                    lags: int = 20,
                                    alpha: float = 0.05) -> Dict:
-        """ARCH-LM test for volatility clustering. If significant, GARCH is appropriate."""
+        """ARCH-LM test for volatility clustering."""
         from statsmodels.stats.diagnostic import acorr_ljungbox, het_arch
 
         returns = returns.dropna()
@@ -653,7 +653,7 @@ class GARCHAnalysis:
                   mean_model: str = 'Constant',
                   vol_model: str = 'GARCH',
                   dist: str = 't') -> Dict:
-        """Fit GARCH(p,q). Returns params, conditional vol, persistence, half-life, etc."""
+        """Fit GARCH(p,q)."""
         try:
             from arch import arch_model
         except ImportError:
@@ -710,7 +710,7 @@ class GARCHAnalysis:
 
     @staticmethod
     def fit_egarch(returns: pd.Series, p: int = 1, q: int = 1) -> Dict:
-        """EGARCH for asymmetric volatility (leverage effect). gamma < 0 means negative shocks increase vol more."""
+        """EGARCH for asymmetric volatility."""
         try:
             from arch import arch_model
         except ImportError:
@@ -749,7 +749,7 @@ class GARCHAnalysis:
                            method: str = 'analytic',
                            n_simulations: int = 1000,
                            confidence_level: float = 0.95) -> Dict:
-        """Forecast conditional volatility h-steps ahead."""
+        """Forecast conditional volatility."""
         model_obj = fitted_model['model']
         params = fitted_model['params']
         persistence = fitted_model['persistence']
@@ -803,7 +803,7 @@ class GARCHAnalysis:
                                         event_date: pd.Timestamp,
                                         estimation_window: int = 120,
                                         event_window: Tuple[int, int] = (-5, 10)) -> Dict:
-        """Event study for volatility: fit GARCH pre-event, forecast expected vol, compute abnormal vol."""
+        """Event study for volatility."""
         if not isinstance(stock_returns.index, pd.DatetimeIndex):
             raise ValueError("stock_returns must have a DatetimeIndex")
 
@@ -857,7 +857,7 @@ class GARCHAnalysis:
 
 
 class VARAnalysis:
-    """Vector Autoregression for multivariate time series."""
+    """VAR for multivariate time series."""
 
     @staticmethod
     def fit_var(data: pd.DataFrame,
@@ -866,7 +866,7 @@ class VARAnalysis:
                ic: str = 'bic',
                trend: str = 'c',
                check_stationarity: bool = True) -> Dict:
-        """Fit VAR with automatic lag selection. Returns model, coefficients, stability check, Granger matrix."""
+        """Fit VAR with lag selection."""
         from statsmodels.tsa.api import VAR
 
         var_data = data[var_cols].dropna()
@@ -951,7 +951,7 @@ class VARAnalysis:
                         bootstrap: bool = False,
                         n_bootstrap: int = 1000,
                         alpha: float = 0.05) -> Dict:
-        """Impulse response functions. Shock one variable, see how others respond over time."""
+        """Impulse response functions."""
         model = var_result['model']
 
         if orthogonalized:
@@ -1007,7 +1007,7 @@ class VARAnalysis:
     def forecast_error_variance_decomposition(var_result,
                                              periods: int = 20,
                                              orthogonalized: bool = True) -> Dict:
-        """FEVD: what % of forecast variance in Y is due to shocks in X?"""
+        """FEVD summary."""
         model = var_result['model']
 
         if orthogonalized:
@@ -1046,7 +1046,7 @@ class VARAnalysis:
                              cause_var: str,
                              response_var: str,
                              signif: float = 0.05) -> Dict:
-        """Granger causality within VAR framework."""
+        """Granger causality within VAR."""
         model = var_result['model']
         selected_lag = var_result['selected_lag']
 
@@ -1072,7 +1072,7 @@ class VARAnalysis:
 
     @staticmethod
     def var_forecast(var_result, steps: int = 10, alpha: float = 0.05) -> Dict:
-        """Forecast all variables h-steps ahead with CIs."""
+        """Forecast h steps with CIs."""
         model = var_result['model']
 
         history = getattr(model, 'y', None)

@@ -8,7 +8,7 @@ Tests all newly implemented functionality:
 3. Coefficient plot visualization
 4. LaTeX table export
 
-Run this script to verify everything works before the datathon.
+Run this script to check features before the datathon.
 """
 
 import numpy as np
@@ -304,5 +304,5 @@ print("LaTeX Export: Regression tables for papers")
 print()
 print(f"Test outputs saved to: {output_dir.absolute()}")
 print()
-print("ALL TESTS COMPLETED!")
+print("Tests completed.")
 print()
